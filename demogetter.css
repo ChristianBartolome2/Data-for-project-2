@@ -1,0 +1,57 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #00C853; /* Nvidia Green */
+    font-weight: 700;
+}
+
+.dashboard-section {
+    margin-top: 2rem;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.row {
+    margin-bottom: 2rem;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.footer {
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 1rem 0;
+    background-color: #333;
+    color: white;
+}
