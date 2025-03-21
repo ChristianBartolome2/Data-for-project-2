@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="demogetter.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nvidia Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Nvidia Dashboard</h1>
+
+        <!-- Sales & Traffic Section -->
+        <div class="row dashboard-section">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Nvidia 50 Series Sales</h5>
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Customer Traffic</h5>
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Satisfaction & Market Share Section -->
+        <div class="row dashboard-section">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Customer Satisfaction</h5>
+                        <canvas id="satisfactionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Market Share</h5>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Performance Section -->
+        <div class="row dashboard-section">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Product Performance</h5>
+                        <canvas id="productPerformanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Nvidia | Dashboard Presentation</p>
+    </div>
+
+    <!-- Add your scripts at the end of the body -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+        // Example script to create a chart
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '# of Sales',
+                    data: [],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function fetchDataAndUpdateChart() {
+            Papa.parse('https://raw.githubusercontent.com/ChristianBartolome2/Data-for-project-2/refs/heads/main/nvidia_50_series_sales%20bar%20chart.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    // Assuming the CSV has 'Month' and 'Sales' columns
+                    var labels = results.data.map(row => row.Model);
+                    var data = results.data.map(row => row.Units_Sold);
+
+                    salesChart.data.labels = labels;
+                    salesChart.data.datasets[0].data = data;
+                    salesChart.update();
+                },
+                error: function(error) {
+                    console.error('Error fetching or parsing data:', error);
+                }
+            });
+        }
+
+        var trafficCtx = document.getElementById('trafficChart').getContext('2d');
+        var trafficChart = new Chart(trafficCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Customer Visits',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function fetchTrafficData() {
+            Papa.parse('https://raw.githubusercontent.com/ChristianBartolome2/Data-for-project-2/refs/heads/main/customer_traffic%20line%20chart.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    var labels = results.data.map(row => row.Date);
+                    var data = results.data.map(row => row.Customers_Visited);
+
+                    trafficChart.data.labels = labels;
+                    trafficChart.data.datasets[0].data = data;
+                    trafficChart.update();
+                },
+                error: function(error) {
+                    console.error('Error fetching or parsing traffic data:', error);
+                }
+            });
+        }
+
+     // Customer Satisfaction Radar Chart
+var satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
+var satisfactionChart = new Chart(satisfactionCtx, {
+    type: 'radar',
+    data: {
+        labels: ['Product Quality', 'Customer Support', 'Ease of Use', 'Price Satisfaction', 'Delivery Time'],
+        datasets: [{
+            label: 'Satisfaction Score',
+            data: [], // Placeholder for data
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scale: {
+            ticks: {
+                beginAtZero: true,
+                max: 5,
+                stepSize: 1
+            }
+        }
+    }
+});
+
+function fetchSatisfactionData() {
+    Papa.parse('https://raw.githubusercontent.com/ChristianBartolome2/Data-for-project-2/refs/heads/main/nvidia_50_series_radar_chart_data.csv', {
+        download: true,
+        header: true,
+        complete: function(results) {
+            // Assuming the CSV has columns: 'Product Quality', 'Customer Support', 'Ease of Use', 'Price Satisfaction', 'Delivery Time'
+            var data = [
+                results.data[0].Product_Quality,
+                results.data[0].Customer_Support,
+                results.data[0].Ease_of_Use,
+                results.data[0].Price_Satisfaction,
+                results.data[0].Delivery_Time
+            ];
+
+            // Update the radar chart with the fetched data
+            satisfactionChart.data.datasets[0].data = data;
+            satisfactionChart.update();
+        },
+        error: function(error) {
+            console.error('Error fetching or parsing satisfaction data:', error);
+        }
+    });
+}
+
+// Pie Chart
+var pieCtx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: [], // Will be populated by the CSV data (Company names)
+            datasets: [{
+                label: 'Market Share by Company',
+                data: [],  // Will be populated by the CSV data (Market Share values)
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw + '%'; // Format tooltip with percentage
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Fetch data for Pie Chart (Company and Market_Share columns)
+    function fetchPieChartData() {
+        Papa.parse('https://raw.githubusercontent.com/ChristianBartolome2/Data-for-project-2/refs/heads/main/market_share%20pie%20chart.csv', {  // Replace with your actual CSV URL
+            download: true,
+            header: true,
+            complete: function(results) {
+                // Assuming the CSV has columns 'Company' and 'Market_Share'
+                var labels = results.data.map(row => row.Company);  // Company names for labels
+                var data = results.data.map(row => parseFloat(row.Market_Share));  // Market share as data
+
+                // Update the Pie Chart with the fetched data
+                pieChart.data.labels = labels;
+                pieChart.data.datasets[0].data = data;
+                pieChart.update();
+            },
+            error: function(error) {
+                console.error('Error fetching or parsing pie chart data:', error);
+            }
+        });
+    }
+
+    // Product Performance Scatter Plot
+    var productPerformanceCtx = document.getElementById('productPerformanceChart').getContext('2d');
+        var productPerformanceChart = new Chart(productPerformanceCtx, {
+            type: 'scatter',
+            data: {
+                labels: ['Product', 'Revenue', 'Customer_Rating'],
+                datasets: [{
+                    label: 'Product Performance',
+                    data: [],
+                    backgroundColor: 'rgba(75, 192, 192, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        function fetchProductPerformanceData() {
+            Papa.parse('https://raw.githubusercontent.com/ChristianBartolome2/Data-for-project-2/refs/heads/main/product_performance%20scatter%20plot.csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    var data = results.data.map(row => ({
+                        x: parseFloat(row.Revenue),
+                        y: parseFloat(row.Customer_Rating),
+                        label: row.Product
+                    }));
+
+                    productPerformanceChart.data.datasets[0].data = data;
+                    productPerformanceChart.update();
+                },
+                error: function(error) {
+                    console.error('Error fetching or parsing product performance data:', error);
+                }
+            });
+        }
+
+
+
+        // Call the function to fetch data and update chart
+        fetchDataAndUpdateChart();
+        fetchTrafficData() ;
+        fetchSatisfactionData ();
+        fetchPieChartData();
+        fetchProductPerformanceData();
+    </script>
+</body>
+</html>
